@@ -27,6 +27,12 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
         <parse-template location="FlightFinder.html" doc:name="Parse Template"/>
         <logger level="INFO" doc:name="Logger"/>
     </flow>
+    <flow name="getFlightsFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/flights" allowedMethods="POST" doc:name="HTTP"/>
+        <json:json-to-object-transformer returnClass="com.mulesoft.training.FlightRequest" doc:name="JSON to Object"/>
+        <set-variable variableName="destination" value="#[payload.destination]" doc:name="Set Destination"/>
+        <logger level="INFO" doc:name="Logger"/>
+    </flow>
     <flow name="getUnitedFlightsFlow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/united" allowedMethods="GET" doc:name="HTTP"/>
         <set-variable variableName="destination" value="#[(message.inboundProperties.'http.query.params'.code == empty)? 'SFO' : message.inboundProperties.'http.query.params'.code]" doc:name="Set Destination"/>
