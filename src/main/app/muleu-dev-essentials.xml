@@ -22,6 +22,11 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
     <db:mysql-config name="Training_American_MySQL_Configuration" host="mudb.mulesoft-training.com" port="3306" user="mule" password="mule" database="training" doc:name="MySQL Configuration" />
     <jms:activemq-connector name="Active_MQ" specification="1.1" brokerURL="tcp://54.69.115.37:61616" validateConnections="true" doc:name="Active MQ"/>
     <sfdc:config name="Salesforce__Basic_Authentication" username="pjuarez@inventtiva.com" password="3Im&amp;$AcPt@GdV6" securityToken="8i7BM8Kx8irAkcwo1x8xRFaq" doc:name="Salesforce: Basic Authentication"/>
+    <flow name="getFlightFormFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/flights" allowedMethods="GET" doc:name="HTTP"/>
+        <parse-template location="FlightFinder.html" doc:name="Parse Template"/>
+        <logger level="INFO" doc:name="Logger"/>
+    </flow>
     <flow name="getUnitedFlightsFlow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/united" allowedMethods="GET" doc:name="HTTP"/>
         <set-variable variableName="destination" value="#[(message.inboundProperties.'http.query.params'.code == empty)? 'SFO' : message.inboundProperties.'http.query.params'.code]" doc:name="Set Destination"/>
