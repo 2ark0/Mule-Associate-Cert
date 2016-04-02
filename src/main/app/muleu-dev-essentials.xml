@@ -22,6 +22,7 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
     <db:mysql-config name="Training_American_MySQL_Configuration" host="mudb.mulesoft-training.com" port="3306" user="mule" password="mule" database="training" doc:name="MySQL Configuration" />
     <jms:activemq-connector name="Active_MQ" specification="1.1" brokerURL="tcp://54.69.115.37:61616" validateConnections="true" doc:name="Active MQ"/>
     <sfdc:config name="Salesforce__Basic_Authentication" username="pjuarez@inventtiva.com" password="3Im&amp;$AcPt@GdV6" securityToken="8i7BM8Kx8irAkcwo1x8xRFaq" doc:name="Salesforce: Basic Authentication"/>
+    <mulexml:jaxb-context name="JAXB_Context" packageNames="com.mulesoft.training" doc:name="JAXB Context"/>
     <flow name="getFlightFormFlow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/flights" allowedMethods="GET" doc:name="HTTP"/>
         <parse-template location="FlightFinder.html" doc:name="Parse Template"/>
@@ -48,7 +49,8 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
     <flow name="getDeltaFlightsFlow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/delta" allowedMethods="GET" doc:name="HTTP"/>
         <ws:consumer config-ref="Delta_Web_Service_Consumer" operation="listAllFlights" doc:name="Web Service Consumer"/>
-        <mulexml:dom-to-xml-transformer doc:name="DOM to XML"/>
+        <mulexml:jaxb-xml-to-object-transformer returnClass="com.mulesoft.training.FlightArray" jaxbContext-ref="JAXB_Context" doc:name="XML to JAXB Object"/>
+        <set-payload value="#[payload.flights]" doc:name="Set Payload to Flights"/>
         <logger level="INFO" doc:name="Logger"/>
     </flow>
     <flow name="getAmericanFlightsFlow">

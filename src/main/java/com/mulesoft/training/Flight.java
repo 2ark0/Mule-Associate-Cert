@@ -1,15 +1,21 @@
 package com.mulesoft.training;
 
-import java.util.Comparator;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Flight implements java.io.Serializable, Comparable<Flight> {
-	
+
+	@XmlElement(name = "code")
 	@JsonProperty("code")
 	String flightCode;
+	@XmlElement(name = "origin")
 	@JsonProperty("origin")
 	String origination;
+	@XmlElement(name = "emptySeats")
 	@JsonProperty("emptySeats")
 	int availableSeats;
 	String departureDate;
@@ -18,11 +24,12 @@ public class Flight implements java.io.Serializable, Comparable<Flight> {
 	double price;
 	String planeType;
 
-	public Flight()	{
+	public Flight() {
 
 	}
 
-	public Flight(String flightCode, String destination, double price, String planeType) {
+	public Flight(String flightCode, String destination, double price,
+			String planeType) {
 		this.flightCode = flightCode;
 		this.destination = destination;
 		this.price = price;
