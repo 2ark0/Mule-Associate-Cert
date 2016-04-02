@@ -49,7 +49,19 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
     </flow>
     <flow name="getDeltaFlightsFlow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/delta" allowedMethods="GET" doc:name="HTTP"/>
-        <ws:consumer config-ref="Delta_Web_Service_Consumer" operation="listAllFlights" doc:name="Web Service Consumer"/>
+        <set-variable variableName="destination" value="#[(message.inboundProperties.'http.query.params'.code == empty)? 'SFO' : message.inboundProperties.'http.query.params'.code]" doc:name="Set Destination"/>
+        <dw:transform-message metadata:id="f168f107-e01e-4494-866e-1136fbfa5b7c" doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/xml
+%namespace ns0 http://soap.training.mulesoft.com/
+---
+{
+	ns0#findFlight: {
+		destination: flowVars.destination
+	}
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <ws:consumer config-ref="Delta_Web_Service_Consumer" operation="findFlight" doc:name="Web Service Consumer"/>
         <mulexml:jaxb-xml-to-object-transformer returnClass="com.mulesoft.training.FlightArray" jaxbContext-ref="JAXB_Context" doc:name="XML to JAXB Object"/>
         <set-payload value="#[payload.flights]" doc:name="Set Payload to Flights"/>
         <logger level="INFO" doc:name="Logger"/>
