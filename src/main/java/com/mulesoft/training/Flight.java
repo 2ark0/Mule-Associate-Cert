@@ -2,10 +2,15 @@ package com.mulesoft.training;
 
 import java.util.Comparator;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
 public class Flight implements java.io.Serializable, Comparable<Flight> {
 	
+	@JsonProperty("code")
 	String flightCode;
+	@JsonProperty("origin")
 	String origination;
+	@JsonProperty("emptySeats")
 	int availableSeats;
 	String departureDate;
 	String airlineName;

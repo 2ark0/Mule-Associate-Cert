@@ -41,6 +41,9 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
                 <http:uri-param paramName="destination" value="#[flowVars.destination]"/>
             </http:request-builder>
         </http:request>
+        <json:json-to-object-transformer returnClass="com.mulesoft.training.FlightArray" doc:name="JSON to Object"/>
+        <set-payload value="#[payload.flights]" doc:name="Set Payload"/>
+        <logger level="INFO" doc:name="Logger"/>
     </flow>
     <flow name="getDeltaFlightsFlow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/delta" allowedMethods="GET" doc:name="HTTP"/>
