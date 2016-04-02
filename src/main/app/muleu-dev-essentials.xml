@@ -64,6 +64,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
         <ws:consumer config-ref="Delta_Web_Service_Consumer" operation="findFlight" doc:name="Web Service Consumer"/>
         <mulexml:jaxb-xml-to-object-transformer returnClass="com.mulesoft.training.FlightArray" jaxbContext-ref="JAXB_Context" doc:name="XML to JAXB Object"/>
         <set-payload value="#[payload.flights]" doc:name="Set Payload to Flights"/>
+        <custom-transformer class="com.mulesoft.training.FlightSortTransformer" doc:name="Sort Flights"/>
         <logger level="INFO" doc:name="Logger"/>
     </flow>
     <flow name="getAmericanFlightsFlow">
