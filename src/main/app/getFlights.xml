@@ -14,6 +14,13 @@ http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/
 http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd
 http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
 http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+    <flow name="getAllAirlineFlightsFlow">
+        <scatter-gather doc:name="Scatter-Gather">
+            <flow-ref name="getUnitedFlightsFlow" doc:name="getUnitedFlightsFlow"/>
+            <flow-ref name="getDeltaFlightsFlow" doc:name="getDeltaFlightsFlow"/>
+            <flow-ref name="getAmericanFlightsFlow" doc:name="getAmericanFlightsFlow"/>
+        </scatter-gather>
+    </flow>
     <flow name="getFlightFormFlow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/flights" allowedMethods="GET" doc:name="HTTP"/>
         <parse-template location="FlightFinder.html" doc:name="Parse Template"/>
@@ -24,11 +31,20 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
         <json:json-to-object-transformer returnClass="com.mulesoft.training.FlightRequest" doc:name="JSON to Object"/>
         <set-variable variableName="destination" value="#[payload.destination]" doc:name="Set Destination"/>
         <logger level="INFO" doc:name="Logger"/>
-        <scatter-gather doc:name="Scatter-Gather">
-            <flow-ref name="getUnitedFlightsFlow" doc:name="getUnitedFlightsFlow"/>
-            <flow-ref name="getDeltaFlightsFlow" doc:name="getDeltaFlightsFlow"/>
-            <flow-ref name="getAmericanFlightsFlow" doc:name="getAmericanFlightsFlow"/>
-        </scatter-gather>
+        <choice doc:name="Choice">
+            <when expression="#[payload.airline=='all']">
+                <flow-ref name="getAllAirlineFlightsFlow" doc:name="getAllAirlineFlightsFlow"/>
+            </when>
+            <when expression="#[payload.airline=='united']">
+                <flow-ref name="getUnitedFlightsFlow" doc:name="getUnitedFlightsFlow"/>
+            </when>
+            <when expression="#[payload.airline=='delta']">
+                <flow-ref name="getDeltaFlightsFlow" doc:name="getDeltaFlightsFlow"/>
+            </when>
+            <when expression="#[payload.airline=='american']">
+                <flow-ref name="getAmericanFlightsFlow" doc:name="getAmericanFlightsFlow"/>
+            </when>
+        </choice>
         <combine-collections-transformer doc:name="Combine Collections"/>
         <custom-transformer class="com.mulesoft.training.FlightSortTransformer" doc:name="Sort Flights"/>
         <json:object-to-json-transformer doc:name="Object to JSON"/>
