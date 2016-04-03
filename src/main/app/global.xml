@@ -25,8 +25,6 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 		service="TicketServiceService" port="TicketServicePort" serviceAddress="http://training-u.cloudhub.io/essentials/delta" doc:name="Web Service Consumer" />
 	<db:mysql-config name="Training_American_MySQL_Configuration" host="mudb.mulesoft-training.com" port="3306" user="mule" password="mule"
 		database="training" doc:name="MySQL Configuration" />
-	<jms:activemq-connector name="Active_MQ" specification="1.1" brokerURL="tcp://54.69.115.37:61616" validateConnections="true"
-		doc:name="Active MQ" />
 	<sfdc:config name="Salesforce__Basic_Authentication" username="pjuarez@inventtiva.com" password="3Im&amp;$AcPt@GdV6" securityToken="8i7BM8Kx8irAkcwo1x8xRFaq"
 		doc:name="Salesforce: Basic Authentication" />
 	<mulexml:jaxb-context name="JAXB_Context" packageNames="com.mulesoft.training" doc:name="JAXB Context" />
