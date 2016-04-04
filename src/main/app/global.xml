@@ -29,5 +29,15 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 		doc:name="Salesforce: Basic Authentication" />
 	<mulexml:jaxb-context name="JAXB_Context" packageNames="com.mulesoft.training" doc:name="JAXB Context" />
     <payload-type-filter expectedType="java.util.ArrayList" name="FilterNotArrayList" doc:name="Payload"/>
+    <choice-exception-strategy name="globalChoice_Exception_Strategy">
+        <catch-exception-strategy when="#[exception.causedBy(org.mule.api.expression.ExpressionRuntimeException)]" doc:name="Catch Expression Exceptions">
+            <set-payload value="The application is currently unavailable" doc:name="Set Payload"/>
+            <logger level="INFO" doc:name="Logger"/>
+        </catch-exception-strategy>
+        <catch-exception-strategy doc:name="Catch all other exceptions">
+            <set-payload value="Data is currently unavailable" doc:name="Set Payload"/>
+            <logger level="INFO" doc:name="Logger"/>
+        </catch-exception-strategy>
+    </choice-exception-strategy>
 
 </mule>
