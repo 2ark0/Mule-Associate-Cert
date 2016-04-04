@@ -34,7 +34,6 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
         <http:listener config-ref="HTTP_Listener_Configuration" path="/flights" allowedMethods="GET" doc:name="HTTP"/>
         <parse-template location="FlightFinder.html" doc:name="Parse Template"/>
         <logger level="INFO" doc:name="Logger"/>
-        <exception-strategy ref="globalChoice_Exception_Strategy" doc:name="Reference Exception Strategy"/>
     </flow>
     <flow name="getFlightsFlow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/flights" allowedMethods="POST" doc:name="HTTP"/>
@@ -63,12 +62,11 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
         <custom-transformer class="com.mulesoft.training.FlightSortTransformer" doc:name="Sort Flights"/>
         <json:object-to-json-transformer doc:name="Object to JSON"/>
         <logger level="INFO" doc:name="Logger"/>
-        <exception-strategy ref="globalChoice_Exception_Strategy" doc:name="Reference Exception Strategy"/>
     </flow>
     <flow name="getUnitedFlightsFlow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/united" allowedMethods="GET" doc:name="HTTP"/>
         <set-variable variableName="destination" value="#[(flowVars.destination ==empty &amp;&amp; message.inboundProperties.'http.query.params'.code == empty) ? 'SFO' : (flowVars.destination != empty ? flowVars.destination : message.inboundProperties.'http.query.params'.code)]" doc:name="Set Destination"/>
-        <http:request config-ref="United_REST_Request_Configuration" path="/{destination}/e" method="GET" doc:name="United REST Request">
+        <http:request config-ref="United_REST_Request_Configuration" path="/{destination}" method="GET" doc:name="United REST Request">
             <http:request-builder>
                 <http:uri-param paramName="destination" value="#[flowVars.destination]"/>
             </http:request-builder>
@@ -77,7 +75,6 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
         <json:json-to-object-transformer returnClass="com.mulesoft.training.FlightArray" doc:name="JSON to Object"/>
         <set-payload value="#[payload.flights]" doc:name="Set Payload"/>
         <logger level="INFO" doc:name="Logger"/>
-        <exception-strategy ref="globalChoice_Exception_Strategy" doc:name="Reference Exception Strategy"/>
     </flow>
     <flow name="getDeltaFlightsFlow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/delta" allowedMethods="GET" doc:name="HTTP"/>
@@ -103,7 +100,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
         <http:listener config-ref="HTTP_Listener_Configuration" path="/american" allowedMethods="GET" doc:name="HTTP"/>
         <set-variable variableName="destination" value="#[(flowVars.destination ==empty &amp;&amp; message.inboundProperties.'http.query.params'.code == empty) ? 'SFO' : (flowVars.destination != empty ? flowVars.destination : message.inboundProperties.'http.query.params'.code)]" doc:name="Set Destination"/>
         <db:select config-ref="Training_American_MySQL_Configuration" doc:name="Database">
-            <db:parameterized-query><![CDATA[select * from flight where toAirport = #[flowVars.destination]]]></db:parameterized-query>
+            <db:parameterized-query><![CDATA[select * from flights where toAirport = #[flowVars.destination]]]></db:parameterized-query>
         </db:select>
         <expression-filter expression="#[payload != empty]" doc:name="Filter no results"/>
         <dw:transform-message metadata:id="d717032f-ee09-4f00-bd25-fa90f12e722d" doc:name="Transform Message">
@@ -122,6 +119,5 @@ payload map ((payload01 , indexOfPayload01) -> {
 } as :object {class: "com.mulesoft.training.Flight"})]]></dw:set-payload>
         </dw:transform-message>
         <logger message="#[payload]" level="INFO" doc:name="Logger"/>
-        <exception-strategy ref="globalChoice_Exception_Strategy" doc:name="Reference Exception Strategy"/>
     </flow>
 </mule>
