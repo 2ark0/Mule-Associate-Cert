@@ -6,4 +6,4 @@ Activities by week on Mulesoft AnypointStudio for Mule U. Developer Certificatio
 
 * [Flights website - http://localhost:8081/flights](http://localhost:8081/flights)
 
-http://mu.mulesoft-training.com/build/banking/rest/customers/2/accounts
+* http://mu.mulesoft-training.com/build/banking/rest/customers/2/accounts
